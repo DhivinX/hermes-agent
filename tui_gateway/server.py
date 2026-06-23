@@ -3399,9 +3399,24 @@ def _apply_project_workspace(task_id: str, path: str, _name: str = "") -> None:
     session's cwd to the chosen project's folder and push session.info so the
     desktop follows (refresh tree + scope into the project). This is the ONLY
     auto-cwd path — driven by an explicit tool call, never a terminal `cd`."""
-    sid = str(task_id or "")
-    session = _sessions.get(sid)
-    if not session or not path:
+    if not path:
+        return
+
+    # The tool's task_id is the durable session_key, but _sessions is keyed by a
+    # short sid uuid (and the desktop routes events by that sid). Resolve it.
+    key = str(task_id or "")
+    sid = ""
+    session = None
+    with _sessions_lock:
+        if key in _sessions:
+            sid, session = key, _sessions[key]
+        else:
+            for cand_sid, cand in _sessions.items():
+                if cand.get("session_key") == key or getattr(cand.get("agent"), "session_id", None) == key:
+                    sid, session = cand_sid, cand
+                    break
+
+    if session is None:
         return
 
     resolved = os.path.abspath(os.path.expanduser(str(path)))
@@ -6235,6 +6250,31 @@ def _(rid, params: dict) -> dict:
             if session.get("running"):
                 session["running"] = False
                 _clear_inflight_turn(session)
+
+    # Full abort: "stop" must stop EVERYTHING. The cooperative agent interrupt
+    # breaks the loop and kills the in-flight foreground subprocess, but any
+    # background processes this session spawned (servers, watchers, bg tasks)
+    # are detached and would otherwise keep running after stop. Kill them too,
+    # scoped to this session's task_id so other sessions are untouched.
+    try:
+        from tools.process_registry import process_registry
+
+        killed = process_registry.kill_all(task_id=session.get("session_key", ""))
+        if killed:
+            logger.info("session.interrupt: killed %d background process(es)", killed)
+    except Exception:
+        logger.debug("session.interrupt: background process kill failed", exc_info=True)
+
+    # …and any background-detached subagents this session spawned (they're off
+    # the parent's interrupt-propagation list once detached).
+    try:
+        from tools.delegate_tool import interrupt_subagents_for_session
+
+        stopped = interrupt_subagents_for_session(session.get("session_key", ""))
+        if stopped:
+            logger.info("session.interrupt: interrupted %d background subagent(s)", stopped)
+    except Exception:
+        logger.debug("session.interrupt: subagent interrupt failed", exc_info=True)
     # Scope the pending-prompt release to THIS session.  A global
     # _clear_pending() would collaterally cancel clarify/sudo/secret
     # prompts on unrelated sessions sharing the same tui_gateway
