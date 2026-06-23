@@ -50,6 +50,10 @@ export function toggleReviewTreeMode(): void {
 
 export const $reviewFiles = atom<HermesReviewFile[]>([])
 export const $reviewLoading = atom(false)
+// False when the active session isn't in a local git repo (detached/fresh chat,
+// remote backend). Lets the pane say "not a repo" instead of stranding on a
+// skeleton or implying a clean repo with "no changes".
+export const $reviewIsRepo = atom(true)
 
 // Largest single-file churn (added + removed) in the current diff. Drives the
 // per-row data bars: each file's bar is its churn relative to this max, so the
@@ -96,12 +100,20 @@ export async function refreshReview(): Promise<void> {
 
   if (!$reviewOpen.get() || !ctx) {
     $reviewFiles.set([])
+    $reviewIsRepo.set(Boolean(ctx))
+    // Critical: clear loading on the no-cwd / not-a-repo path too. It's set
+    // true (optimistically) before a refresh is scheduled, so skipping it here
+    // strands the pane on a forever-skeleton for a fresh, detached chat.
+    if (seq === reviewRefreshSeq) {
+      $reviewLoading.set(false)
+    }
 
     return
   }
 
   const { cwd, review } = ctx
 
+  $reviewIsRepo.set(true)
   $reviewLoading.set(true)
 
   try {

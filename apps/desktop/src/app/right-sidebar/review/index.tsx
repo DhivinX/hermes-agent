@@ -23,6 +23,7 @@ import {
   $reviewDiff,
   $reviewDiffLoading,
   $reviewFiles,
+  $reviewIsRepo,
   $reviewLoading,
   $reviewRevertTarget,
   $reviewSelectedPath,
@@ -54,6 +55,7 @@ export function ReviewPane() {
   const panesFlipped = useStore($panesFlipped)
   const files = useStore($reviewFiles)
   const loading = useStore($reviewLoading)
+  const isRepo = useStore($reviewIsRepo)
   const selectedPath = useStore($reviewSelectedPath)
   const diff = useStore($reviewDiff)
   const diffLoading = useStore($reviewDiffLoading)
@@ -143,7 +145,9 @@ export function ReviewPane() {
         <TreeSkeleton />
       ) : (
         <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-1 px-4 text-center">
-          {!loading && <div className="text-[0.7rem] text-muted-foreground/60">{c.noChanges}</div>}
+          {!loading && (
+            <div className="text-[0.7rem] text-muted-foreground/60">{isRepo ? c.noChanges : c.notRepo}</div>
+          )}
         </div>
       )}
 

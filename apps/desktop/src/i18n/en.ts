@@ -1434,6 +1434,7 @@ export const en: Translations = {
       revertAllConfirm: 'Discard every change and restore files to the committed state? This cannot be undone.',
       staged: 'Staged',
       noChanges: 'No changes',
+      notRepo: 'Not a git repository',
       noDiff: 'No diff to show',
       scopeUncommitted: 'Uncommitted',
       scopeBranch: 'Branch',

@@ -1509,6 +1509,7 @@ export const zhHant = defineLocale({
       revertAllConfirm: '捨棄所有變更並將檔案還原至已提交狀態？此操作無法復原。',
       staged: '已暫存',
       noChanges: '沒有變更',
+      notRepo: '不是 Git 儲存庫',
       noDiff: '沒有可顯示的差異',
       scopeUncommitted: '未提交',
       scopeBranch: '分支',

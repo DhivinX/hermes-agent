@@ -1110,6 +1110,7 @@ export interface Translations {
       revertAllConfirm: string
       staged: string
       noChanges: string
+      notRepo: string
       noDiff: string
       scopeUncommitted: string
       scopeBranch: string

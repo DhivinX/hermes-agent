@@ -1558,6 +1558,7 @@ export const ja = defineLocale({
       revertAllConfirm: 'すべての変更を破棄してコミット済みの状態に戻しますか？この操作は元に戻せません。',
       staged: 'ステージ済み',
       noChanges: '変更なし',
+      notRepo: 'Git リポジトリではありません',
       noDiff: '表示する差分がありません',
       scopeUncommitted: '未コミット',
       scopeBranch: 'ブランチ',

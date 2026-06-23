@@ -1618,6 +1618,7 @@ export const zh: Translations = {
       revertAllConfirm: '放弃所有更改并将文件恢复到已提交状态？此操作无法撤销。',
       staged: '已暂存',
       noChanges: '没有更改',
+      notRepo: '不是 Git 仓库',
       noDiff: '没有可显示的差异',
       scopeUncommitted: '未提交',
       scopeBranch: '分支',
