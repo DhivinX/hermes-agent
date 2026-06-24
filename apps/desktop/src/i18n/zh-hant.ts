@@ -856,6 +856,8 @@ export const zhHant = defineLocale({
       retry: '重試',
       hatch: '孵化',
       hatching: '正在孵化你的寵物……',
+      hatchingSub: '正在為每一格注入生命——請稍候。',
+      hatched: '孵化成功！',
       namePlaceholder: '為寵物命名',
       staleBackend: '請更新 Hermes 以生成寵物。',
       adopt: '領養',

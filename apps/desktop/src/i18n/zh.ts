@@ -949,6 +949,8 @@ export const zh: Translations = {
       retry: '重试',
       hatch: '孵化',
       hatching: '正在孵化你的宠物……',
+      hatchingSub: '正在为每一帧注入生命——请稍候。',
+      hatched: '孵化成功！',
       namePlaceholder: '给宠物起个名字',
       staleBackend: '请更新 Hermes 以生成宠物。',
       adopt: '领养',

@@ -761,6 +761,8 @@ export const en: Translations = {
       retry: 'Retry',
       hatch: 'Hatch',
       hatching: 'Hatching your pet…',
+      hatchingSub: 'Bringing every frame to life — this takes a moment.',
+      hatched: 'It hatched!',
       namePlaceholder: 'Name your pet',
       staleBackend: 'Update Hermes to generate pets.',
       adopt: 'Adopt',

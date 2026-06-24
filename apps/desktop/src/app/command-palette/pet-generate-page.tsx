@@ -11,10 +11,11 @@ import { useStore } from '@nanostores/react'
 import { useEffect, useState } from 'react'
 
 import { useGatewayRequest } from '@/app/gateway/hooks/use-gateway-request'
+import { PetEggHatch, PetHatchSparkles } from '@/components/pet/pet-egg-hatch'
 import { PetSprite } from '@/components/pet/pet-sprite'
 import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
-import { Check, Egg, Loader2, PawPrint, RefreshCw } from '@/lib/icons'
+import { Check, Egg, Loader2, PawPrint, RefreshCw, Sparkles } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 import { closeCommandPalette } from '@/store/command-palette'
 import { type PetInfo } from '@/store/pet'
@@ -103,9 +104,10 @@ export function PetGeneratePage({ search }: PetGeneratePageProps) {
     return <Status text={copy.staleBackend} tone="error" />
   }
 
-  // Hatching is slow (several grounded image generations) — own the whole pane.
+  // Hatching is slow (several grounded image generations) — own the whole pane
+  // with the egg-incubation beat instead of a bare spinner.
   if (status === 'hatching') {
-    return <Status icon={<Loader2 className="size-4 animate-spin" />} text={copy.hatching} />
+    return <PetEggHatch subtitle={copy.hatchingSub} title={copy.hatching} />
   }
 
   // Preview: play every animation row before the user commits.
@@ -250,13 +252,26 @@ function HatchPreview({ pet, adopting, error, onAdopt, onDiscard }: HatchPreview
     setStateIndex(0)
   }, [pet.slug])
 
+  // Celebrate the reveal — fires once per hatched pet.
+  useEffect(() => {
+    triggerHaptic('crisp')
+  }, [pet.slug])
+
   const previewInfo: PetInfo = { ...pet, scale: PREVIEW_SCALE }
 
   return (
     <div className="flex flex-col items-center gap-2 p-2">
-      <div className="flex min-h-[9rem] w-full items-center justify-center rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) py-2">
-        <PetSprite info={previewInfo} rowOverride={activeRow} />
+      <div className="relative flex min-h-[9rem] w-full items-center justify-center overflow-hidden rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) py-2">
+        <PetHatchSparkles />
+        <div className="pet-reveal">
+          <PetSprite info={previewInfo} rowOverride={activeRow} />
+        </div>
       </div>
+
+      <p className="flex items-center gap-1 text-xs font-semibold text-(--ui-accent)">
+        <Sparkles className="size-3" />
+        {copy.hatched}
+      </p>
 
       {pet.displayName && <p className="text-xs font-medium text-foreground">{pet.displayName}</p>}
 

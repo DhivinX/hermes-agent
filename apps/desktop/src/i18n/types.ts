@@ -637,6 +637,8 @@ export interface Translations {
       retry: string
       hatch: string
       hatching: string
+      hatchingSub: string
+      hatched: string
       namePlaceholder: string
       staleBackend: string
       adopt: string

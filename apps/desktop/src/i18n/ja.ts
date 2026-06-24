@@ -885,6 +885,8 @@ export const ja = defineLocale({
       retry: '再試行',
       hatch: '孵化',
       hatching: 'ペットを孵化しています…',
+      hatchingSub: 'すべてのフレームに命を吹き込んでいます。少々お待ちください。',
+      hatched: '孵化しました！',
       namePlaceholder: 'ペットに名前を付ける',
       staleBackend: 'ペットを生成するには Hermes を更新してください。',
       adopt: '迎え入れる',
